@@ -7,14 +7,14 @@ use std::fmt;
 
 /// Errors produced by this component. Fail-fast: errors are returned, not panicked.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Sigmaos_svntogit_communityError {
+pub enum SvntogitCommunityError {
     /// The requested operation is not valid in the current state.
     InvalidState,
     /// Input failed validation.
     InvalidInput(String),
 }
 
-impl fmt::Display for Sigmaos_svntogit_communityError {
+impl fmt::Display for SvntogitCommunityError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::InvalidState => write!(f, "invalid state"),
@@ -23,20 +23,20 @@ impl fmt::Display for Sigmaos_svntogit_communityError {
     }
 }
 
-impl std::error::Error for Sigmaos_svntogit_communityError {}
+impl std::error::Error for SvntogitCommunityError {}
 
 /// Core component type. Holds configuration; performs no I/O by default.
 #[derive(Debug, Clone, Default)]
-pub struct Sigmaos_svntogit_community {
+pub struct SvntogitCommunity {
     name: String,
 }
 
-impl Sigmaos_svntogit_community {
+impl SvntogitCommunity {
     /// Create a new component instance. Fails fast on empty names.
-    pub fn new(name: impl Into<String>) -> Result<Self, Sigmaos_svntogit_communityError> {
+    pub fn new(name: impl Into<String>) -> Result<Self, SvntogitCommunityError> {
         let name = name.into();
         if name.trim().is_empty() {
-            return Err(Sigmaos_svntogit_communityError::InvalidInput("name must not be empty".into()));
+            return Err(SvntogitCommunityError::InvalidInput("name must not be empty".into()));
         }
         Ok(Self { name })
     }
@@ -47,9 +47,9 @@ impl Sigmaos_svntogit_community {
     }
 
     /// Perform the component's primary action. Returns a deterministic result.
-    pub fn run(&self) -> Result<String, Sigmaos_svntogit_communityError> {
+    pub fn run(&self) -> Result<String, SvntogitCommunityError> {
         if self.name.is_empty() {
-            return Err(Sigmaos_svntogit_communityError::InvalidState);
+            return Err(SvntogitCommunityError::InvalidState);
         }
         Ok(format!("{}: ok", self.name))
     }
@@ -62,18 +62,18 @@ mod tests {
     #[test]
     fn new_rejects_empty_name() {
         // Arrange / Act / Assert
-        assert!(matches!(Sigmaos_svntogit_community::new("  "), Err(Sigmaos_svntogit_communityError::InvalidInput(_))));
+        assert!(matches!(SvntogitCommunity::new("  "), Err(SvntogitCommunityError::InvalidInput(_))));
     }
 
     #[test]
     fn run_returns_deterministic_result() {
-        let c = Sigmaos_svntogit_community::new("test").unwrap();
+        let c = SvntogitCommunity::new("test").unwrap();
         assert_eq!(c.run().unwrap(), "test: ok");
     }
 
     #[test]
     fn name_is_accessible() {
-        let c = Sigmaos_svntogit_community::new("abc").unwrap();
+        let c = SvntogitCommunity::new("abc").unwrap();
         assert_eq!(c.name(), "abc");
     }
 }
