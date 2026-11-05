@@ -1,0 +1,8 @@
+[package]
+name = "sigmaos-svntogit-community"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Community repo VCS migration tooling — SigmaOS component inspired by Arch Linux infrastructure."
+
+[dependencies]
