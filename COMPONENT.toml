@@ -3,7 +3,7 @@ name = "SigmaOS-svntogit-community"
 tier = 2
 stability = "scaffold"
 language = "rust"
-description = "svntogit-community component"
+description = "SigmaOS svntogit-community component (Arch Linux inspired)"
 upstream = []
 
 [contract]
