@@ -1,9 +1,9 @@
 [package]
 name = "SigmaOS-svntogit-community"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "Apache-2.0"
-description = "SigmaOS svntogit_community component"
+description = "SigmaOS svntogit-community component — Arch community repo SVN→git mirror tooling (archlinux/svntogit-community inspired)"
 
 [lib]
 name = "svntogit_community"
@@ -13,3 +13,4 @@ path = "src/lib.rs"
 thiserror = "1"
 
 [dev-dependencies]
+tempfile = "3"

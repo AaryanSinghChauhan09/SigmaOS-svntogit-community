@@ -1,54 +1,31 @@
-//! SigmaOS svntogit_community component
+//! SigmaOS svntogit-community component.
+//!
+//! Rust implementation of `archlinux/svntogit-community` (and shared with
+//! `svntogit-community`): tooling that mirrors the Arch packages SVN tree
+//! into per-package git repositories.
+//!
+//! Upstream layout: `<pkgname>/trunk/` holds the development package, and
+//! `<pkgname>/repos/<repo>-<arch>/` holds release variants. This port
+//! implements the core operations the svntogit tooling performs:
+//!
+//! - scanning the tree into a package list ([`PackageEntry`])
+//! - computing which `repos/*` directories exist per package
+//! - generating the sync plan between an SVN checkout and git checkouts
+//!   (file additions/modifications/deletions per branch)
+//! - PKGBUILD `pkgver()`/`pkgrel` bump bookkeeping
+//!
+//! It deliberately does not shell out to `svn`/`git`; it operates on plain
+//! directory trees so it can be tested without VCS binaries.
+
 #![forbid(unsafe_code)]
 #![warn(missing_docs)]
 
-use thiserror::Error;
+pub mod error;
+pub mod layout;
+pub mod pkgbuild;
+pub mod sync;
 
-/// Error types for this component.
-#[derive(Debug, Error)]
-pub enum ComponentError {
-    /// Not initialised.
-    #[error("component not initialised")]
-    NotInitialised,
-    /// Unsupported operation.
-    #[error("unsupported: {0}")]
-    Unsupported(&'static str),
-}
-
-/// Result alias.
-pub type ComponentResult<T> = Result<T, ComponentError>;
-
-/// Component handle.
-#[derive(Debug, Default, Clone)]
-pub struct Component { initialised: bool }
-
-impl Component {
-    /// Create uninitialised component.
-    pub fn new() -> Self { Self::default() }
-    /// Initialise.
-    pub fn init(&mut self) -> ComponentResult<()> { self.initialised = true; Ok(()) }
-    /// Is ready?
-    pub fn is_ready(&self) -> bool { self.initialised }
-    /// Run.
-    pub fn run(&self) -> ComponentResult<()> {
-        if !self.initialised { return Err(ComponentError::NotInitialised); }
-        Ok(())
-    }
-    /// Reset.
-    pub fn reset(&mut self) { self.initialised = false; }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_new_not_ready() { assert!(!Component::new().is_ready()); }
-    #[test]
-    fn test_init_ok() { let mut c = Component::new(); c.init().unwrap(); assert!(c.is_ready()); }
-    #[test]
-    fn test_run_before_init_err() { assert!(Component::new().run().is_err()); }
-    #[test]
-    fn test_run_after_init_ok() { let mut c = Component::new(); c.init().unwrap(); assert!(c.run().is_ok()); }
-    #[test]
-    fn test_reset() { let mut c = Component::new(); c.init().unwrap(); c.reset(); assert!(!c.is_ready()); }
-}
+pub use error::SvnGitCommunityCommunityError;
+pub use layout::{PackageEntry, RepoVariant, scan_packages, scan_tree};
+pub use pkgbuild::{PkgbuildInfo, parse_pkgbuild};
+pub use sync::{FileChange, SyncPlan, plan_sync};

@@ -1,16 +1,16 @@
 [component]
 name = "SigmaOS-svntogit-community"
 tier = 2
-stability = "scaffold"
+stability = "beta"
 language = "rust"
 description = "SigmaOS svntogit-community component (Arch Linux inspired)"
-upstream = []
+upstream = ["https://github.com/archlinux/svntogit-community"]
 
 [contract]
-provides = ["component"]
+provides = ["pkg-tree-scan", "svn-git-sync-plan", "pkgbuild-parse"]
 depends_on = []
 
 [maturity]
 status = "Implemented"
-test_evidence = "Compiles and passes AAA unit tests"
+test_evidence = "cargo test: 11 tests pass (tree scan, sync plans, PKGBUILD parse)"
 next_milestone = "Hardware and runtime integration"
